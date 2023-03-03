@@ -177,7 +177,7 @@ export default function Home() {
 
   //////////////////////get user function ///////////////////////
   function googleAuth() {
-    window.open("https://todolist-brre.onrender.com", "_self");
+    window.open("https://todolist-brre.onrender.com/auth/google", "_self");
   }
   async function getUser() {
     try {
