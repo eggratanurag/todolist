@@ -31,7 +31,7 @@ app.use(Session({
 )
 var corsOptions = {
   credentials: true,
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(cors(corsOptions));
@@ -39,24 +39,24 @@ app.use(passport.initialize());
 app.use(passport.session())
 app.use(express.json());
 
-// console.log(process.env.CLIENT_ID)
-// console.log(process.env.MONGO_URI)
-
 
 app.use('/auth', authRoutes)
 app.use('/list', listRoutes)
 
-// const __dirname1 = path.resolve();
-// if(process.env.NODE_ENV === 'production') {
-//    app.use(express.static(path.join(__dirname1, "/frontend/build")));
+const __dirname1 = path.resolve();
+if(process.env.NODE_ENV === 'production') {
+   app.use(express.static(path.join(__dirname1, "/frontend/dist")));
 
-//    app.get("*",(req,res)=> {
-//     res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
-//    })
-// }else {
+   app.get("*",(req,res)=> {
+    res.sendFile(path.resolve(__dirname1, "frontend", "dist", "index.html"));
+   })
+}else {
  
-   
-// }
+  app.get("/", (req, res) => {
+    res.send("api is performing fully well...");
+  });
+  
+}
 
 app.get("/", (req, res) => {
       res.send("api is performing fully well...");

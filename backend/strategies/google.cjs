@@ -11,7 +11,7 @@ const User = require('../db/User.cjs')
 // console.log(process.env.CLIENT_ID)
 // console.log(process.env.PORT)
 passport.serializeUser(function(user, done) {
-  // console.log("calling serializeUser")
+  // console.log("calling serializeUser", user)
   // console.log(user)
   done(null, user.id);
 });
@@ -48,6 +48,7 @@ passport.use(
         if(user) {
          return done(null, user);
         }else {
+          console.log("calling create user statement")
          const newUser = await User.create({
            googleId: profile.id,
            name: profile.displayName,

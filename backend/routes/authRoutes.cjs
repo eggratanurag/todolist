@@ -33,7 +33,7 @@ router.get('/google',
           user
         })
       }else {
-        res.status(401);
+        res.status(400);
         throw new Error("no user found");
       }
     }else {
