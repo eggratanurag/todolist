@@ -46,6 +46,7 @@ passport.use(
 
         const user = await User.findOne({ googleId: profile.id });
         if(user) {
+          console.log("calling found user statement")
          return done(null, user);
         }else {
           console.log("calling create user statement")

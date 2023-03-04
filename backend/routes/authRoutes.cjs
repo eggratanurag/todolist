@@ -23,7 +23,7 @@ router.get('/google',
   })
   router.get('/login/success', 
   async (req, res) => {
-    // console.log(req.session)
+    console.log("calling req session statement",req.session)
     if(req.session.passport) {
       const user =  await User.findById(req.session.passport.user);
       // console.log(user)
