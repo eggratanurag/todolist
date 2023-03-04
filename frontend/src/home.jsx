@@ -340,7 +340,7 @@ export default function Home() {
       <footer className='flex footer'>
         {user ? (
           <button onClick={() => logout()} className='authButton flex'>
-            logout
+           do you want to logout {user.name} ?
           </button>
         ) : (
           <button className='authButton flex' onClick={() => googleAuth()}>

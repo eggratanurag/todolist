@@ -11,13 +11,13 @@ const User = require('../db/User.cjs')
 // console.log(process.env.CLIENT_ID)
 // console.log(process.env.PORT)
 passport.serializeUser(function(user, done) {
-  // console.log("calling serializeUser", user)
+  console.log("calling serializeUser", user)
   // console.log(user)
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) =>  {
-  // console.log("calling deserializeUser",id)
+  console.log("calling deserializeUser",id)
  
   try {
     const user = await User.findById(id);
