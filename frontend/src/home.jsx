@@ -177,7 +177,7 @@ export default function Home() {
 
   //////////////////////get user function ///////////////////////
   function googleAuth() {
-    window.open("https://todolist-brre.onrender.com/auth/google", "_self");
+    window.open("https://lazy-pajamas-mite.cyclic.app/auth/google", "_self");
   }
   async function getUser() {
     try {
