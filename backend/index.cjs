@@ -58,9 +58,9 @@ if(process.env.NODE_ENV === 'production') {
   
 }
 
-app.get("/", (req, res) => {
-      res.send("api is performing fully well...");
-    });
+// app.get("/", (req, res) => {
+//       res.send("api is performing fully well...");
+//     });
 
 
 const PORT = process.env.PORT ;
