@@ -317,7 +317,7 @@ export default function Home() {
           </button>
         ) : (
           <button className='authButton flex' onClick={() => googleAuth()}>
-            <GoogleIcon /> sign in with google
+            <GoogleIcon /> sign in with googl
           </button>
         )}
       </footer>
