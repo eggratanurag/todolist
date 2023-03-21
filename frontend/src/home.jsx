@@ -129,7 +129,7 @@ export default function Home() {
   function googleAuth() {
    
     window.open(import.meta.env.VITE_AUTH_URL, "_self");
-    
+    console.log(import.meta.env.VITE_AUTH_URL)
   }
 
   const { isLoading: userLoading } = useQuery({
