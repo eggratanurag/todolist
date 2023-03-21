@@ -129,7 +129,7 @@ export default function Home() {
   function googleAuth() {
    
     window.open(import.meta.env.VITE_AUTH_URL, "_self");
-    console.log(import.meta.env.VITE_AUTH_URL)
+    // console.log(import.meta.env.VITE_AUTH_URL)
   }
 
   const { isLoading: userLoading } = useQuery({
@@ -137,7 +137,7 @@ export default function Home() {
     queryFn: getUserFn,
     retry: false,
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       setUser(data);
       setCurrentListName(Object.keys(data.lists)[0]);
     },
@@ -317,7 +317,7 @@ export default function Home() {
           </button>
         ) : (
           <button className='authButton flex' onClick={() => googleAuth()}>
-            <GoogleIcon /> sign in with googl
+            <GoogleIcon /> Sign in with Google
           </button>
         )}
       </footer>

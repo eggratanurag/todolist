@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-console.log(import.meta.env.VITE_BASE_URL)
+// console.log(import.meta.env.VITE_BASE_URL)
 // console.log(process.env.VITE_BASE_URL)
 const queryClient = new QueryClient({
   defaultOptions: {
