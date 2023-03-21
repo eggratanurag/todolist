@@ -128,8 +128,8 @@ export default function Home() {
   //////////////////////get user function ///////////////////////
   function googleAuth() {
    
-    window.open(process.env.VITE_AUTH_URL, "_self");
-    console.log(process.env.VITE_AUTH_URL)
+    window.open(import.meta.env.VITE_AUTH_URL, "_self");
+    console.log(import.meta.env.VITE_AUTH_URL)
   }
 
   const { isLoading: userLoading } = useQuery({
