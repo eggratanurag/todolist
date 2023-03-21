@@ -3,13 +3,21 @@ import GoogleIcon from "@mui/icons-material/Google";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
 import TopBarProgress from "react-topbar-progress-indicator";
-import axios from "axios";
 import Day from "./day.jsx";
 import "./home.css";
+import {
+  getUserFn,
+  logOut,
+  addItemFn,
+  createListFn,
+  checkBoxFilledFn,
+  deleteClickedFn,
+} from "./api.jsx";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export default function Home() {
-  const [progress, setProgress] = useState(false);
-  const [currentListName, setCurrentListName] = useState("");
+  const [listIndex, setListIndex] = useState();
+  const [currentListName, setCurrentListName] = useState(<Day />);
   const [deleteConsent, setDeleteConsent] = useState(false);
   const [input, setInput] = useState("");
   const [prevIndex, setPrevIndex] = useState("");
@@ -19,20 +27,13 @@ export default function Home() {
   TopBarProgress.config({ barColors: { 0: "#53516d", "1.0": "#5951d6" } });
 
   useEffect(() => {
-    setProgress(true);
-    setCurrentListName(<Day />);
-    getUser();
-  }, []);
-
-  useEffect(() => {
-
+   
     if (user) {
       const clickedDiv = document.getElementById(currentListName);
 
       clickedDiv && clickedDiv.classList.add("clicked");
 
       if (prevIndex) {
-     
         const prevDiv = document.getElementById(prevIndex);
         // console.log("prevDiv", prevDiv);
         if (prevDiv) {
@@ -44,12 +45,12 @@ export default function Home() {
         setDeleteConsent(false);
       }
       setPrevIndex(currentListName);
-   
     }
   }, [currentListName]);
 
   // console.log("index state: " + (indexState))
   useEffect(() => {
+   
     const clickedDiv = document.getElementById(currentListName);
     if (clickedDiv) {
       deleteConsent
@@ -66,149 +67,100 @@ export default function Home() {
 
   /*list functions*/
 
-  async function createList() {
-    setProgress(true);
-
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      await axios
-        .put("/list/create", { listName: input, userId: user._id }, config)
-        .then((result) => {
-          setUser(result.data);
-          setCurrentListName(
-            Object.keys(result.data.lists)[
-              Object.keys(result.data.lists).length - 1
-            ],
-          );
-        });
+  const createList = useMutation({
+    mutationFn: createListFn,
+    onSuccess: (data) => {
+      setUser(data);
+      setCurrentListName(
+        Object.keys(data.lists)[Object.keys(data.lists).length - 1],
+      );
       setInput("");
-      setProgress(false);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    },
+    onError: (data) => {
+      console.log(data.message);
+    },
+  });
 
-  async function addItem() {
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      await axios
-        .put(
-          "/list/add",
-          { listName: currentListName, listItem: input, userId: user._id },
-          config,
-        )
-        .then((result) => setUser(result.data));
+  const addItem = useMutation({
+    mutationFn: addItemFn,
+    onSuccess: (data) => {
       setInput("");
-    } catch (error) {
-      console.log(error);
-    }
-  }
+      setUser(data);
+    },
+    onError: (data) => {
+      console.log(data.message);
+    },
+  });
 
-  function listClicked(listName, index) {
-    setCurrentListName(listName);
-    // setIndexState(index);
-  }
-  function cancelled() {
-    setDeleteConsent(false);
-  }
-
-  async function deleteClicked(listName, listIndex) {
-    // console.log("calling deleteClicked");
-    setDeleteConsent(true);
-    if (deleteConsent) {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      await axios
-        .put(
-          "/list/deleteList",
-          { listName: listName, userId: user._id },
-          config,
-        )
-        .then((result) => result.data)
-        .then((data) => {
-          setUser(data);
-          if(data.lists) {
-            if (Object.keys(data.lists).length === listIndex) {
-              setCurrentListName(Object.keys(data.lists)[listIndex - 1]);
-            } else {
-              setCurrentListName(Object.keys(data.lists)[listIndex]);
-            }
-
-          }else {
-            setCurrentListName(<Day />)
-          }
-          
-         
-        });
+  const deleteClicked = useMutation({
+    mutationFn: deleteClickedFn,
+    onSuccess: (data) => {
       setDeleteConsent(false);
-      setProgress(false);
-    }
-  }
+      setUser(data);
+      if (data.lists) {
+        if (Object.keys(data.lists).length === listIndex) {
+          setCurrentListName(Object.keys(data.lists)[listIndex - 1]);
+        } else {
+          setCurrentListName(Object.keys(data.lists)[listIndex]);
+        }
+      } else {
+        setCurrentListName(<Day />);
+      }
+    },
+    onError: (data) => {
+      console.log(data.message);
+    },
+  });
 
-  async function checkBoxFilled(listItem, index) {
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      await axios
-        .put(
-          "/list/remove",
-          { listName: currentListName, listItemIndex: index, userId: user._id },
-          config,
-        )
-        .then((result) => setUser(result.data));
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const deleteHandle = (listName) => {
+    setDeleteConsent(true);
+
+    deleteConsent && deleteClicked.mutate({ listName, userId: user._id });
+  };
+
+  const checkBoxFilled = useMutation({
+    mutationFn: checkBoxFilledFn,
+    onSuccess: (data) => {
+      setUser(data);
+    },
+  });
 
   //////////////////////get user function ///////////////////////
   function googleAuth() {
-    window.open("https://todolist-brre.onrender.com/auth/google", "_self");
-  }
-  async function getUser() {
-    try {
-      await axios
-        .get("/auth/login/success", { withCredentials: true })
-        //  .then(result=> console.log(result.data.user))
-        .then((result) => {
-          setUser(result.data.user);
-          setCurrentListName(Object.keys(result.data.user.lists)[0]);
-        });
-    } catch (error) {
-      console.log(error.response?.data);
-    }
-    // setIndexState(0);
-    setProgress(false);
-  }
-  async function logout() {
-    setProgress(true);
-    try {
-      await axios
-        .get("/auth/logout", { withCredentials: true })
-        .then((result) => result.data === "logged out" && setUser());
-    } catch (error) {
-      console.log(error.response?.data);
-    }
-    setCurrentListName("Sign in to create list");
-    setProgress(false);
+   
+    window.open(import.meta.env.VITE_AUTH_URL, "_self");
+    
   }
 
+  const { isLoading: userLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUserFn,
+    retry: false,
+    onSuccess: (data) => {
+      console.log(data);
+      setUser(data);
+      setCurrentListName(Object.keys(data.lists)[0]);
+    },
+    onError: (data) => {
+      console.log(data.message);
+    },
+  });
+
+  const { refetch: logOutRefetch, isFetching: logOutFetch } = useQuery({
+    queryKey: ["logout"],
+    queryFn: logOut,
+    enabled: false,
+    onSuccess: () => {
+      setUser();
+      setCurrentListName("Sign in to create list");
+    },
+    onError: (data) => {
+      console.log(data.message);
+    },
+  });
+
   /////////navigation bar in mobile functionality //////////////////
-  function faltu() {
+  function progNav() {
     const visibility = primaryNav.current.getAttribute("data-visible");
 
     if (visibility === "false") {
@@ -220,16 +172,19 @@ export default function Home() {
     }
   }
 
- 
   return (
     <div className='wholePage flex'>
-      {progress && <TopBarProgress />}
+      {(createList.isLoading ||
+        addItem.isLoading ||
+        deleteClicked.isLoading ||
+        logOutFetch ||
+        userLoading) && <TopBarProgress />}
 
       <div className='page flex'>
         <div className='mainDiv flex'>
           <div className='backgroundForH1Div flex'>
             <div
-              onClick={() => faltu()}
+              onClick={() => progNav()}
               className='h1div flex mobile-nav-toggle'
               aria-controls='primary-navigation'
               aria-expanded='false'
@@ -251,7 +206,13 @@ export default function Home() {
                 <div className='addButtonDiv flex'>
                   <button
                     className='addButton'
-                    onClick={() => addItem()}
+                    onClick={() =>
+                      addItem.mutate({
+                        listName: currentListName,
+                        listItem: input,
+                        userId: user._id,
+                      })
+                    }
                     disabled={
                       (!user ||
                         (user && !user.lists) ||
@@ -264,7 +225,12 @@ export default function Home() {
                   </button>
                   <button
                     className='createButton'
-                    onClick={() => createList()}
+                    onClick={() =>
+                      createList.mutate({
+                        listName: input,
+                        userId: user._id,
+                      })
+                    }
                     disabled={
                       (!user || input.length > 15 || input.length == 0) && true
                     }
@@ -287,7 +253,7 @@ export default function Home() {
                         key={index}
                         id={listName}
                         className='nestedDiv'
-                        onClick={() => listClicked(listName, index)}
+                        onClick={() => setCurrentListName(listName)}
                         type='button'
                       >
                         <div className='listText'>
@@ -295,7 +261,7 @@ export default function Home() {
                             className='cancelButton'
                             onClick={(e) => {
                               e.stopPropagation();
-                              cancelled();
+                              setDeleteConsent(false);
                             }}
                           >
                             Cancel
@@ -306,7 +272,8 @@ export default function Home() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteClicked(listName, index);
+                            setListIndex(index);
+                            deleteHandle(listName);
                           }}
                           className='deleteButton flex'
                         >
@@ -323,7 +290,13 @@ export default function Home() {
                       <div key={index} className='listItem flex'>
                         <button
                           className='deleteCheckbox flex'
-                          onClick={() => checkBoxFilled(listItem, index)}
+                          onClick={() =>
+                            checkBoxFilled.mutate({
+                              listName: currentListName,
+                              listItemIndex: index,
+                              userId: user._id,
+                            })
+                          }
                         >
                           <RemoveIcon className='removeIcon' />
                         </button>
@@ -339,8 +312,8 @@ export default function Home() {
       </div>
       <footer className='flex footer'>
         {user ? (
-          <button onClick={() => logout()} className='authButton flex'>
-           do you want to logout {user.name} ?
+          <button onClick={() => logOutRefetch()} className='authButton flex'>
+            do you want to logout {user.name} ?
           </button>
         ) : (
           <button className='authButton flex' onClick={() => googleAuth()}>

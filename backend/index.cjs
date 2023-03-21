@@ -43,6 +43,10 @@ app.use(express.json());
 app.use('/auth', authRoutes)
 app.use('/list', listRoutes)
 
+
+// console.log(process.env.REDIRECT_URL)
+
+
 const __dirname1 = path.resolve();
 if(process.env.NODE_ENV === 'production') {
    app.use(express.static(path.join(__dirname1, "/frontend/dist")));
@@ -57,10 +61,6 @@ if(process.env.NODE_ENV === 'production') {
   });
   
 }
-
-// app.get("/", (req, res) => {
-//       res.send("api is performing fully well...");
-//     });
 
 
 const PORT = process.env.PORT ;
