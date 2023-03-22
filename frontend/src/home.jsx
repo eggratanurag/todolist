@@ -128,7 +128,7 @@ export default function Home() {
   //////////////////////get user function ///////////////////////
   function googleAuth() {
    
-    window.open(import.meta.env.VITE_AUTH_URL, "_self");
+    window.open("https://todolist-brre.onrender.com/auth/google", "_self");
     // console.log(import.meta.env.VITE_AUTH_URL)
   }
 
