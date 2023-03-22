@@ -22,11 +22,6 @@
   margin: 0;
 }
 
-.dark-mode {
-  background-color: #1F2027;
-  color: white;
-}
-
 input[type="checkbox"] {
 
   -webkit-appearance: none;
@@ -73,10 +68,10 @@ input[type="checkbox"] {
 }
 
 .backgroundForH1Div {
+  background-color: #f7f7f7;
   height: 200px;
   z-index: 9000;
   width: 100%;
-  /* background-color: #f7f7f7; */
 }
 
 .mainDiv {
@@ -108,8 +103,6 @@ input[type="checkbox"] {
   flex-direction: column;
   border-left: 1px solid #f0eeee;
   width: 70%;
-
-
   margin: 0 0 auto 0;
 }
 
@@ -117,11 +110,16 @@ input[type="checkbox"] {
   width: 100%;
   border-top: 1px solid #f0eeee;
 }
+
 .buttonDiv {
+  background-color: #f7f7f7;
   margin: 0 0 auto 0;
   width: 30%;
   flex-direction: column;
 }
+
+
+
 .listItem {
   overflow: hidden;
   justify-content: start;
@@ -367,6 +365,7 @@ footer {
 
 @media (max-width: 600px) {
   .primary-navigation {
+    background-color: #f7f7f7;
     position: fixed;
     inset: 0;
     z-index: 1000;
@@ -408,6 +407,12 @@ footer {
   }
 
 }
+
+.dark-mode {
+  background-color: #1F2027;
+  color: white;
+}
+
 
 a,button, input[type="file"] {
 

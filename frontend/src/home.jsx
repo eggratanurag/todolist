@@ -171,14 +171,20 @@ export default function Home() {
       navToggle.current.setAttribute("aria-expanded", false);
     }
   }
+
+
   function myFunction() {
     var element = document.getElementsByClassName("wholePage")[0];
     var element2 = document.getElementsByClassName("page")[0];
     var element3 = document.getElementsByClassName("backgroundForH1Div")[0];
-    var element4 = document.getElementsByClassName("buttonDiv")[0].style.backgroundColor = "#1F2027";
+    var element4 = document.getElementsByClassName("buttonDiv")[0];
+ 
     element.classList.toggle("dark-mode");
     element2.classList.toggle("dark-mode");
     element3.classList.toggle("dark-mode");
+    element4.classList.toggle("dark-mode");
+    
+   
   }
 
   return (
@@ -209,6 +215,7 @@ export default function Home() {
               <div className='inputDiv flex'>
                 <input
                   type='text'
+                  className="faltuInput"
                   placeholder='add something...'
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
