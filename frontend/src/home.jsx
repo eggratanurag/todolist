@@ -171,6 +171,15 @@ export default function Home() {
       navToggle.current.setAttribute("aria-expanded", false);
     }
   }
+  function myFunction() {
+    var element = document.getElementsByClassName("wholePage")[0];
+    var element2 = document.getElementsByClassName("page")[0];
+    var element3 = document.getElementsByClassName("backgroundForH1Div")[0];
+    var element4 = document.getElementsByClassName("buttonDiv")[0].style.backgroundColor = "#1F2027";
+    element.classList.toggle("dark-mode");
+    element2.classList.toggle("dark-mode");
+    element3.classList.toggle("dark-mode");
+  }
 
   return (
     <div className='wholePage flex'>
@@ -193,7 +202,8 @@ export default function Home() {
               <h2>{currentListName === "home" ? <Day /> : currentListName} </h2>
             </div>
           </div>
-
+           
+            
           <div className='formDiv flex'>
             <div className='contentDiv flex'>
               <div className='inputDiv flex'>
@@ -313,13 +323,17 @@ export default function Home() {
       <footer className='flex footer'>
         {user ? (
           <button onClick={() => logOutRefetch()} className='authButton flex'>
-            do you want to logout {user.name} ?
+            Do you want to logout {user.name} ?
           </button>
         ) : (
+         
           <button className='authButton flex' onClick={() => googleAuth()}>
             <GoogleIcon /> Sign in with Google
           </button>
+         
+          
         )}
+        <input type="checkbox" className="toggle" onClick={()=> myFunction()} ></input>
       </footer>
     </div>
   );
